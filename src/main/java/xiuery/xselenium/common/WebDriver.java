@@ -76,6 +76,10 @@ public class WebDriver {
         return driver.getCurrentUrl();
     }
 
+    public String getPageSource() {
+        return driver.getPageSource();
+    }
+
     public void maxWindow() {
         driver.manage().window().maximize();
     }
@@ -99,6 +103,10 @@ public class WebDriver {
 
     public void toUrl(String url) {
         driver.navigate().to(url);
+    }
+
+    public void toUrlByJS(String url) {
+        executeJS(String.format("window.location.href=\"%s\";", url));
     }
 
     public void executeJS(String js) {
@@ -320,7 +328,7 @@ public class WebDriver {
         Map<String, String> cssMap = new HashMap<>();
 
         if (css.contains("=>")) {
-            String[] cssS = css.split("=>");
+            String[] cssS = css.split("=>", 2);
 
             cssMap.put("by", cssS[0]);
             cssMap.put("value", cssS[1]);
@@ -352,7 +360,7 @@ public class WebDriver {
         } else if (by.equals("xpath")) {
             locator = By.xpath(cssMap.get("value"));
         } else {
-            throw new Exception("Support css: id, name, class, link, css, xpath");
+            throw new Exception("Support css: id, name, class, link, css, tag, xpath");
         }
 
         return locator;
@@ -439,9 +447,12 @@ public class WebDriver {
                 if (getTitle().contains(title)) {
                     return;
                 }
+
+                sleep(100);
             }
 
             counter ++;
+            sleep(1000);
         }
     }
 
@@ -462,6 +473,16 @@ public class WebDriver {
             }else {
                 switchWindow(windowHandle);
             }
+
+            sleep(100);
+        }
+    }
+
+    public void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            // 什么也不做，无关紧要
         }
     }
 
