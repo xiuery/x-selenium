@@ -1,9 +1,6 @@
-server:
-  address: 127.0.0.1
-  port: 8080
 spring:
   datasource:
-    url: jdbc\:mysql\://127.0.0.1\:3306/selenium?useUnicode\=true&characterEncoding\=utf8
+    url: jdbc:mysql://127.0.0.1:3306/selenium?serverTimezone=UTC&useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=utf8
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -14,3 +11,4 @@ x-config:
   je:
     url: https://www.xiuery.com
     browser: chrome
+    source-code: source

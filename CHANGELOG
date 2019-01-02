@@ -4,4 +4,10 @@ v0.1.0
 
 v0.2.0
 =====
-* 封装selenium
+* 封装selenium成WebDriver
+
+v0.3.0
+=====
+* WebDriver优化,新增方法
+* 集成mybatis-plus
+* SpringBoot文件操作工具类

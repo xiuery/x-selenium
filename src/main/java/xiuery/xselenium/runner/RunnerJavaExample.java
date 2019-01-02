@@ -60,16 +60,13 @@ public class RunnerJavaExample implements RunnerBase {
 
             result.add(className);
 
-            System.out.println(className);
-            System.out.println(codeExample);
-
             // 保存至库
             for (Map<String, String> ce: codeExample) {
                 JavaApi javaApi = new JavaApi();
                 javaApi.setName(name);
                 javaApi.setMethod(Integer.parseInt(method));
                 javaApi.setDescription(description);
-                javaApi.setExampleTitle(ce.get("example_title"));
+                javaApi.setExampleTitle(ce.get("exampleTitle"));
                 javaApi.setProject(ce.get("project"));
                 javaApi.setFile(ce.get("file"));
                 javaApi.setCode(ce.get("code"));
