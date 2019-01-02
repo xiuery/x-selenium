@@ -117,6 +117,10 @@ public class WebDriver {
         getElement(css).click();
     }
 
+    public void click(WebElement element) {
+        element.click();
+    }
+
     public void click(WebElement element, String css) throws Exception {
         getElement(element, css).click();
     }
@@ -157,6 +161,9 @@ public class WebDriver {
         return text;
     }
 
+    /**
+     * 根据locator获取元素属性
+     */
     public String getAttribute(String css, String attribute) throws Exception {
         return getElement(css).getAttribute(attribute);
     }
@@ -171,6 +178,26 @@ public class WebDriver {
         return att;
     }
 
+    /**
+     * 根据元素对象获取属性
+     */
+    public String getAttribute(WebElement element, String attribute) {
+        return element.getAttribute(attribute);
+    }
+
+    public String getAttribute(WebElement element, String attribute, boolean trim) {
+        String att = element.getAttribute(attribute);
+
+        if (trim) {
+            return att.trim();
+        }
+
+        return att;
+    }
+
+    /**
+     * 获取子类元素属性
+     */
     public String getAttribute(WebElement element, String css, String attribute) throws Exception {
         return getElement(element, css).getAttribute(attribute);
     }
@@ -385,7 +412,7 @@ public class WebDriver {
     public Boolean waitUntilContainText(String text, long seconds) throws Exception{
         // 指定时间内等待直到页面包含文本字符串
         try {
-            return new WebDriverWait(driver, seconds)
+            return new WebDriverWait(driver, seconds, 200)
                     .until(ExpectedConditions.textToBePresentInElement(getElement("tag=>body"), text));
         } catch (Exception e) {
            throw new Exception(e.getMessage());
@@ -394,7 +421,7 @@ public class WebDriver {
 
     public Boolean waitUntilContainText(String text) throws Exception{
         try {
-            return new WebDriverWait(driver, timeOutSeconds)
+            return new WebDriverWait(driver, timeOutSeconds, 200)
                     .until(ExpectedConditions.textToBePresentInElement(getElement("tag=>body"), text));
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -404,7 +431,8 @@ public class WebDriver {
     public Boolean waitUntilElementVisible(String css, int seconds) throws Exception{
         // 指定时间内等待直到元素存在于页面的DOM上并可见, 可见性意味着该元素不仅被显示, 而且具有大于0的高度和宽度
         try {
-            new WebDriverWait(driver, seconds).until(ExpectedConditions.visibilityOfElementLocated(getLocator(css)));
+            new WebDriverWait(driver, seconds, 200)
+                    .until(ExpectedConditions.visibilityOfElementLocated(getLocator(css)));
             return true;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -413,7 +441,8 @@ public class WebDriver {
 
     public Boolean waitUntilElementVisible(String css) throws Exception{
         try {
-            new WebDriverWait(driver, timeOutSeconds).until(ExpectedConditions.visibilityOfElementLocated(getLocator(css)));
+            new WebDriverWait(driver, timeOutSeconds, 200)
+                    .until(ExpectedConditions.visibilityOfElementLocated(getLocator(css)));
             return true;
         } catch (Exception e) {
             throw new Exception(e.getMessage());

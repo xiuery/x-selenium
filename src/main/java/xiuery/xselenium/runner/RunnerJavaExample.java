@@ -3,6 +3,7 @@ package xiuery.xselenium.runner;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import xiuery.xselenium.common.FileResource;
 import xiuery.xselenium.common.WebDriver;
 import xiuery.xselenium.config.JEConfig;
 import xiuery.xselenium.entity.JavaApi;
@@ -24,6 +25,9 @@ public class RunnerJavaExample implements RunnerBase {
 
     @Autowired
     private JavaApiService javaApiService;
+
+    @Autowired
+    private FileResource fileResource;
 
     public void execute() {
         try {
@@ -125,11 +129,69 @@ public class RunnerJavaExample implements RunnerBase {
         webDriver.switchWindowByTitle("Java Source Code");
 
         String path = "";
+        // 下载源码生成文件
+        try {
+            String project = webDriver.getText("xpath=>//*[@id=\"sidebar\"]/div[1]/span", true);
+            // 文件夹
+            createSourceCode(webDriver.getElements("xpath=>//*[@id=\"treeview\"]/ul/li"), "JAVA");
+        } catch (Exception e) {
+            System.out.println(String.format("download source code fail: %s", e.getMessage()));
+            e.printStackTrace();
+        }
 
         // 关闭当前窗口并返回上一个页面
         webDriver.close();
         webDriver.switchWindowByTitle(title, 3);
 
         return path;
+    }
+
+    /**
+     * 递归生成源码目录文件
+     */
+    private void createSourceCode(List<WebElement> elements, String path) {
+        for (WebElement element: elements) {
+            // 判断是目录还是文件
+            try {
+                if (isFolder(element)) {
+                    // 展开目录
+                    expandFolder(element);
+                    String newPath = path + "/" + webDriver.getText(element, "xpath=>./a", true);
+                    createSourceCode(webDriver.getElements(element, "xpath=>./ul/li"), newPath);
+                } else {
+                    //
+                    String filename = webDriver.getText(element, "xpath=>./a/span", true);
+                    String code = webDriver.getText("id=>codeinner", true);
+                    fileResource.fileWrite(path, filename, code);
+                }
+            } catch (Exception e) {
+                System.out.println("create source code fail");
+                e.printStackTrace();
+            }
+
+            webDriver.sleep(100);
+        }
+    }
+
+    private boolean isFolder(WebElement element) {
+        return webDriver.getAttribute(element, "data-jstree") == null;
+    }
+
+    /**
+     * 判断文件夹是否为展开状态
+     */
+    private void expandFolder(WebElement element) {
+        WebElement subElement = null;
+        try {
+            subElement = webDriver.getElement(element, "xpath=>./a");
+            webDriver.click(subElement);
+            webDriver.sleep(100);
+        } catch (Exception e) {
+            return;
+        }
+        if (webDriver.getAttribute(element, "aria-expanded", true).equals("false")) {
+            webDriver.click(subElement);
+        }
+        webDriver.sleep(1000);
     }
 }

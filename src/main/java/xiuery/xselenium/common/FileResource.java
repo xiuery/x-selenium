@@ -1,18 +1,16 @@
 package xiuery.xselenium.common;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-@ComponentScan
+@Component
 public class FileResource {
 
-    @Value("${x-api.je.root-path}")
-    private String root_path;
+    private String root_path="source-code";
 
     public void fileWrite(String path, String filename, String str) {
         File file = new File(root_path + "/" + path +"/" + filename);

@@ -11,4 +11,4 @@ x-config:
   je:
     url: https://www.xiuery.com
     browser: chrome
-    source-code: source
+    source-code: source-code

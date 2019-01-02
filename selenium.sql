@@ -20,7 +20,6 @@ CREATE DATABASE IF NOT EXISTS selenium default character set utf8 COLLATE utf8_g
 
 -- 创建表
 DROP TABLE IF EXISTS x_java_api;
-
 CREATE TABLE x_java_api
 (
   `id`            int(11)       unsigned  NOT NULL  AUTO_INCREMENT  COMMENT '',
@@ -38,3 +37,16 @@ CREATE TABLE x_java_api
   PRIMARY KEY (id)
 ) engine=InnoDB DEFAULT charset=utf8 comment='example结果记录表';
 
+
+DROP TABLE IF EXISTS x_project;
+CREATE TABLE x_project
+(
+  `id`            int(11)       unsigned  NOT NULL  AUTO_INCREMENT  COMMENT '',
+  `name`          varchar(255)            NOT NULL  DEFAULT ''      COMMENT '类名',
+  `description`   varchar(255)            NOT NULL  DEFAULT ''      COMMENT '描述',
+  `path`          varchar(255)            NOT NULL  DEFAULT ''      COMMENT '项目路径',
+  `create_time` 	bigint(11)    unsigned 	NOT NULL 					        COMMENT '创建时间(毫秒)',
+  `update_time` 	bigint(11) 		unsigned  		NULL  						    COMMENT '更新时间',
+  `delete_time` 	bigint(11)    unsigned  		NULL  						    COMMENT '删除时间',
+  PRIMARY KEY (id)
+) engine=InnoDB DEFAULT charset=utf8 comment='example结果记录表';
