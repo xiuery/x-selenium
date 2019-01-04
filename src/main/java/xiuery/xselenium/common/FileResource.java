@@ -1,5 +1,6 @@
 package xiuery.xselenium.common;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
@@ -10,16 +11,17 @@ import java.io.IOException;
 @Component
 public class FileResource {
 
-    private String root_path="source-code";
+    @Value("${x-config.je.code-path}")
+    private String codePath;
 
-    public void fileWrite(String path, String filename, String str) {
-        File file = new File(root_path + "/" + path +"/" + filename);
+    public boolean fileWrite(String path, String filename, String str) {
+        File file = new File(codePath + "/" + path +"/" + filename);
         FileSystemResource fileSystemResource = new FileSystemResource(file);
 
         if (! fileSystemResource.exists()) {
             // 创建文件夹
-            if (! createPath(root_path + "/" + path)) {
-                return;
+            if (! createPath(codePath + "/" + path)) {
+                return false;
             }
         }
 
@@ -28,8 +30,9 @@ public class FileResource {
             FileWriter fileWriter = (new FileWriter(fileSystemResource.getFile()));
             fileWriter.write(str);
             fileWriter.close();
+            return true;
         } catch (IOException e) {
-            //todo
+            return false;
         }
     }
 

@@ -38,15 +38,16 @@ CREATE TABLE x_java_api
 ) engine=InnoDB DEFAULT charset=utf8 comment='example结果记录表';
 
 
-DROP TABLE IF EXISTS x_project;
-CREATE TABLE x_project
+DROP TABLE IF EXISTS x_project_code;
+CREATE TABLE x_project_code
 (
   `id`            int(11)       unsigned  NOT NULL  AUTO_INCREMENT  COMMENT '',
   `name`          varchar(255)            NOT NULL  DEFAULT ''      COMMENT '类名',
+  `lang`          varchar(8)              NOT NULL  DEFAULT ''      COMMENT '语言',
   `description`   varchar(255)            NOT NULL  DEFAULT ''      COMMENT '描述',
   `path`          varchar(255)            NOT NULL  DEFAULT ''      COMMENT '项目路径',
   `create_time` 	bigint(11)    unsigned 	NOT NULL 					        COMMENT '创建时间(毫秒)',
   `update_time` 	bigint(11) 		unsigned  		NULL  						    COMMENT '更新时间',
   `delete_time` 	bigint(11)    unsigned  		NULL  						    COMMENT '删除时间',
   PRIMARY KEY (id)
-) engine=InnoDB DEFAULT charset=utf8 comment='example结果记录表';
+) engine=InnoDB DEFAULT charset=utf8 comment='项目代码路径';

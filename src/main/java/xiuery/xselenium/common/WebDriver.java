@@ -394,6 +394,7 @@ public class WebDriver {
     }
 
     public WebElement getElement(String css) throws Exception {
+        waitUntilElementVisible(css, 30);
         return driver.findElement(getLocator(css));
     }
 
@@ -402,6 +403,7 @@ public class WebDriver {
     }
 
     public List<WebElement> getElements(String css) throws Exception {
+        waitUntilElementVisible(css, 30);
         return driver.findElements(getLocator(css));
     }
 
@@ -415,7 +417,7 @@ public class WebDriver {
             return new WebDriverWait(driver, seconds, 200)
                     .until(ExpectedConditions.textToBePresentInElement(getElement("tag=>body"), text));
         } catch (Exception e) {
-           throw new Exception(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 

@@ -4,11 +4,22 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+
 mybatis:
   mapper-locations: classpath*\:mapper/*Mapper.xml
   type-aliases-package: com.xiuery.xselenium.entity
+
+logging:
+  level:                                # 日志级别: TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF
+    root: INFO
+    xiuery:                             # 指定包的输出级别
+      xselenium: DEBUG
+  file: D:/x-selenium/selenium.log      # 默认10M拆分
+  path: D:/x-selenium                   # 与file只有一个使用，同时使用file生效
+#  config: classpath:logback-spring.xml  # 指定配置文件
+
 x-config:
   je:
     url: https://www.xiuery.com
     browser: chrome
-    source-code: source-code
+    code-path: D:/x-selenium

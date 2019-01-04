@@ -1,6 +1,6 @@
 v0.1.0
 =====
-* init x-selenium: spring boot + selenium
+* 初始化x-selenium: spring boot + selenium
 
 v0.2.0
 =====
@@ -11,3 +11,9 @@ v0.3.0
 * WebDriver优化,新增方法
 * 集成mybatis-plus
 * SpringBoot文件操作工具类
+
+v0.3.1
+=====
+* 集成loggeer
+* WebDriver优化,解决元素节点未加载完成
+* 文件读写路径配置化

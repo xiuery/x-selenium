@@ -1,6 +1,8 @@
 package xiuery.xselenium.runner;
 
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xiuery.xselenium.common.FileResource;
@@ -28,6 +30,8 @@ public class RunnerJavaExample implements RunnerBase {
 
     @Autowired
     private FileResource fileResource;
+
+    private static final Logger logger = LoggerFactory.getLogger(RunnerJavaExample.class);
 
     public void execute() {
         try {
@@ -57,6 +61,8 @@ public class RunnerJavaExample implements RunnerBase {
 
             className.put("name", name);
             className.put("description", description);
+
+            logger.info("current class name: {}", name);
 
             // 获取code example
             String newUrl = webDriver.getAttribute(element, "xpath=>./div[1]/a", "href", true);
@@ -105,6 +111,8 @@ public class RunnerJavaExample implements RunnerBase {
             codeExample.put("file", webDriver.getText(element, xpath_file, true));
             codeExample.put("code", webDriver.getText(element, xpath_code, true));
 
+            logger.info("\texample title: {}", codeExample.get("exampleTitle"));
+
             // 新打开source code窗口下载源码
             String newUrl = webDriver.getAttribute(element, xpath_source_code, "href", true);
             codeExample.put("path", dlSourceCode(newUrl));
@@ -132,11 +140,14 @@ public class RunnerJavaExample implements RunnerBase {
         // 下载源码生成文件
         try {
             String project = webDriver.getText("xpath=>//*[@id=\"sidebar\"]/div[1]/span", true);
+
+            logger.info("\t\tproject: {}", project);
+
             // 文件夹
+            expandAll();
             createSourceCode(webDriver.getElements("xpath=>//*[@id=\"treeview\"]/ul/li"), "JAVA");
         } catch (Exception e) {
-            System.out.println(String.format("download source code fail: %s", e.getMessage()));
-            e.printStackTrace();
+            logger.error("\t\tproject download fail: {}", e.getMessage());
         }
 
         // 关闭当前窗口并返回上一个页面
@@ -155,7 +166,7 @@ public class RunnerJavaExample implements RunnerBase {
             try {
                 if (isFolder(element)) {
                     // 展开目录
-                    expandFolder(element);
+                    // expandFolder(element);
                     String newPath = path + "/" + webDriver.getText(element, "xpath=>./a", true);
                     createSourceCode(webDriver.getElements(element, "xpath=>./ul/li"), newPath);
                 } else {
@@ -163,10 +174,11 @@ public class RunnerJavaExample implements RunnerBase {
                     String filename = webDriver.getText(element, "xpath=>./a/span", true);
                     String code = webDriver.getText("id=>codeinner", true);
                     fileResource.fileWrite(path, filename, code);
+
+                    logger.info("\t\t\tfile: {}", path + "/" + filename);
                 }
             } catch (Exception e) {
-                System.out.println("create source code fail");
-                e.printStackTrace();
+                logger.error("\t\t\tsource code download fail: {}", e.getMessage());
             }
 
             webDriver.sleep(100);
@@ -178,20 +190,17 @@ public class RunnerJavaExample implements RunnerBase {
     }
 
     /**
-     * 判断文件夹是否为展开状态
+     * 逐个展开会重新加载元素导致失败，一次性全部展开节点
      */
-    private void expandFolder(WebElement element) {
-        WebElement subElement = null;
-        try {
-            subElement = webDriver.getElement(element, "xpath=>./a");
-            webDriver.click(subElement);
-            webDriver.sleep(100);
-        } catch (Exception e) {
-            return;
-        }
-        if (webDriver.getAttribute(element, "aria-expanded", true).equals("false")) {
-            webDriver.click(subElement);
-        }
-        webDriver.sleep(1000);
+    private void expandAll() {
+        webDriver.executeJS("while(true) {" +
+                "\tvar nodes = document.getElementsByClassName(\"jstree-closed\");" +
+                "\tif (nodes.length > 0) {" +
+                "\t\t$.jstree.reference(document.getElementsByClassName(\"jstree-closed\")).open_node(document.getElementsByClassName(\"jstree-closed\"),false,false);\n" +
+                "\t} else {" +
+                "\t\tbreak;\t" +
+                "\t}" +
+                "}"
+        );
     }
 }
