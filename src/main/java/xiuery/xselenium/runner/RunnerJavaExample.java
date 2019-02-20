@@ -1,5 +1,6 @@
 package xiuery.xselenium.runner;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,9 @@ import xiuery.xselenium.common.FileResource;
 import xiuery.xselenium.common.WebDriver;
 import xiuery.xselenium.config.JEConfig;
 import xiuery.xselenium.entity.JavaApi;
+import xiuery.xselenium.entity.ProjectCode;
 import xiuery.xselenium.service.JavaApiService;
+import xiuery.xselenium.service.ProjectCodeService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +32,12 @@ public class RunnerJavaExample implements RunnerBase {
     private JavaApiService javaApiService;
 
     @Autowired
+    private ProjectCodeService projectCodeService;
+
+    @Autowired
     private FileResource fileResource;
+
+    private String lang = "JAVA";
 
     private static final Logger logger = LoggerFactory.getLogger(RunnerJavaExample.class);
 
@@ -107,15 +115,35 @@ public class RunnerJavaExample implements RunnerBase {
             String xpath_file = "xpath=>./div[@class='exampleboxheader']/table/tbody/tr/td[1]/span[2]";
             String xpath_code = "xpath=>./div[@class='exampleboxbody']/pre";
             String xpath_source_code = "xpath=>./div[@class='exampleboxheader']/table/tbody/tr/td[1]/a";
-            codeExample.put("project", webDriver.getText(element, xpath_project, true));
+
+            String project = webDriver.getText(element, xpath_project, true);
+            codeExample.put("project", project);
             codeExample.put("file", webDriver.getText(element, xpath_file, true));
             codeExample.put("code", webDriver.getText(element, xpath_code, true));
 
             logger.info("\texample title: {}", codeExample.get("exampleTitle"));
 
-            // 新打开source code窗口下载源码
-            String newUrl = webDriver.getAttribute(element, xpath_source_code, "href", true);
-            codeExample.put("path", dlSourceCode(newUrl));
+            // 是否已经下载过了
+            QueryWrapper<ProjectCode> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("name", project).ne("path", "");
+            ProjectCode projectCode = projectCodeService.getOne(queryWrapper);
+            if (projectCode == null) {
+                // 新打开source code窗口下载源码
+                String newUrl = webDriver.getAttribute(element, xpath_source_code, "href", true);
+
+                String codePath = dlSourceCode(newUrl);
+                codeExample.put("path", codePath);
+
+                // 下载完成,保存
+                ProjectCode pc = new ProjectCode();
+                pc.setName(project);
+                pc.setLang(lang);
+                pc.setDescription("");
+                pc.setPath(codePath);
+                projectCodeService.save(pc);
+            }else {
+                codeExample.put("path", projectCode.getPath());
+            }
 
             result.add(codeExample);
         }
@@ -143,9 +171,16 @@ public class RunnerJavaExample implements RunnerBase {
 
             logger.info("\t\tproject: {}", project);
 
-            // 文件夹
+            // 展开所有文件目录
             expandAll();
-            createSourceCode(webDriver.getElements("xpath=>//*[@id=\"treeview\"]/ul/li"), "JAVA");
+
+            // 根路径
+            WebElement rootElement = webDriver.getElement("xpath=>//*[@id=\"treeview\"]/ul/li");
+            String rootPath = webDriver.getText(rootElement, "xpath=>./a", true);
+            path = fileResource.getCodePath() + "/" + lang + "/" + rootPath;
+
+            // 子路径文件下载
+            createSourceCode(webDriver.getElements(rootElement, "xpath=>./ul/li"), lang + "/" + rootPath);
         } catch (Exception e) {
             logger.error("\t\tproject download fail: {}", e.getMessage());
         }

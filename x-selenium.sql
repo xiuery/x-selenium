@@ -16,7 +16,7 @@
   -- unsigned:                    0 - 18446744073709551615
 
 -- 创建数据库
-CREATE DATABASE IF NOT EXISTS selenium default character set utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS x-selenium default character set utf8 COLLATE utf8_general_ci;
 
 -- 创建表
 DROP TABLE IF EXISTS x_java_api;

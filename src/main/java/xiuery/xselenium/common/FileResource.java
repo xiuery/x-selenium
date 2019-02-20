@@ -14,6 +14,10 @@ public class FileResource {
     @Value("${x-config.je.code-path}")
     private String codePath;
 
+    public String getCodePath() {
+        return codePath;
+    }
+
     public boolean fileWrite(String path, String filename, String str) {
         File file = new File(codePath + "/" + path +"/" + filename);
         FileSystemResource fileSystemResource = new FileSystemResource(file);

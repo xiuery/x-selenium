@@ -31,7 +31,7 @@ public class WebDriver {
             case "firefox":
                 useBrowser = "ff";
 
-                System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
+                // System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
                 driver = new FirefoxDriver();
                 break;
             case "ff_headless":
@@ -41,13 +41,13 @@ public class WebDriver {
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.setHeadless(true);
 
-                System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
+                // System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
             case "chrome":
                 useBrowser = "chrome";
 
-                System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+                // System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
                 driver = new ChromeDriver();
                 break;
             case "chrome_headless":
@@ -56,7 +56,7 @@ public class WebDriver {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.setHeadless(true);
 
-                System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+                // System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
                 driver = new ChromeDriver(chromeOptions);
                 break;
             default:
