@@ -1,4 +1,4 @@
-### x-selenium
+### xs-selenium
 spring boot + selenium 
 
 #### Links
